@@ -1,6 +1,6 @@
 # MADXtreamSports (MADXS)
 
-Android app for MADXtreamSports. Record skate or boxing on one phone, get a UIS score (0–1000), follow friends, and stream a live 3D path.
+Android app for MADXtreamSports (MADXS). MAD means Motion Active Data. Record skate or boxing on one phone, get a UIS score (0–1000), follow friends, and stream a live 3D path.
 
 Website (watch as guest): https://madxtreamsports.com
 

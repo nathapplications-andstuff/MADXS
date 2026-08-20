@@ -36,6 +36,14 @@
             android:text="@string/app_full_name"
             android:textColor="@color/muted"
             android:textSize="13sp"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_tagline"
+            android:textColor="@color/muted"
+            android:textSize="11sp"
             android:layout_marginBottom="4dp" />
 
         <TextView
