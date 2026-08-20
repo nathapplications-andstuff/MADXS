@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Film Live</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#000;overflow:hidden;height:100vh;width:100vw;font-family:'Courier New',monospace;color:#00ffee}
+#vid{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+#c{position:fixed;inset:0;width:100%;height:100%}
+#topBar{position:fixed;top:0;left:0;right:0;z-index:20;padding:10px 14px;background:rgba(0,5,10,0.55);font-size:10px;letter-spacing:0.06em;display:flex;justify-content:space-between}
+#botBar{position:fixed;bottom:0;left:0;right:0;z-index:20;padding:14px;background:rgba(0,5,10,0.55);display:flex;align-items:center;justify-content:center;gap:16px}
+#btnRec{width:64px;height:64px;border-radius:50%;background:#ff4444;border:4px solid #fff;cursor:pointer}
+#btnRec.rec{border-radius:10px;width:40px;height:40px;margin:12px}
+#scoreTag{font-size:13px;color:#ffd200}
+#stPaused{color:#ffb400;display:none}
+</style>
+</head>
+<body>
+
+<video id="vid" autoplay playsinline muted></video>
+<canvas id="c"></canvas>
+
+<div id="topBar">
+  <span id="stStatus">connecting…</span>
+  <span id="stStyle"></span>
+  <span id="stPaused">⏸ ON BREAK</span>
+  <span id="scoreTag">score —</span>
+</div>
+<div id="botBar">
+  <div id="btnRec" onclick="toggleRec()"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+const DPR=devicePixelRatio||1
+const vid=document.getElementById('vid'), c=document.getElementById('c'), cx=c.getContext('2d')
+const stStatus=document.getElementById('stStatus'), stStyle=document.getElementById('stStyle'), scoreTag=document.getElementById('scoreTag'), stPaused=document.getElementById('stPaused')
+
+function resize(){ c.width=innerWidth*DPR; c.height=innerHeight*DPR }
+addEventListener('resize',resize); resize()
+
+// ── Contrail renderers — copied verbatim from tracer-real.html ────────────
+const CONTRAIL_STYLES=['NEON','FIRE','RAINBOW','ELECTRIC','SPARKLE','PLASMA']
+let contrailStyle=0
+function segW(p,base,gain){return (base+p.g*gain)*DPR}
+
+function drawContrail(cx,pts,hue){
+  if(pts.length<2)return
+  cx.lineCap='round';cx.lineJoin='round'
+  switch(CONTRAIL_STYLES[contrailStyle]){
+    case 'FIRE':     contrailFire(cx,pts);break
+    case 'RAINBOW':  contrailRainbow(cx,pts);break
+    case 'ELECTRIC': contrailElectric(cx,pts,hue);break
+    case 'SPARKLE':  contrailSparkle(cx,pts,hue);break
+    case 'PLASMA':   contrailPlasma(cx,pts,hue);break
+    default:         contrailNeon(cx,pts,hue)
+  }
+}
+function contrailNeon(cx,pts,hue){
+  for(const pass of [{w:2.4,a:.10},{w:1.1,a:.30},{w:.42,a:.95}]){
+    for(let i=1;i<pts.length;i++){
+      const a=pts[i-1],b=pts[i]
+      cx.lineWidth=segW(b,3,15)*pass.w
+      cx.strokeStyle=`hsla(${hue-b.rot*40},100%,${48+b.rot*22}%,${pass.a*(0.12+0.88*b.f)})`
+      cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()
+    }
+  }
+}
+function contrailFire(cx,pts){
+  const t=performance.now()*0.008
+  for(const pass of [{w:2.4,hue:10,a:.12,l:38},{w:1.2,hue:28,a:.42,l:52},{w:.5,hue:50,a:.95,l:66}]){
+    for(let i=1;i<pts.length;i++){
+      const a=pts[i-1],b=pts[i]
+      const flick=0.82+0.18*Math.sin(t+i*0.7)
+      cx.lineWidth=segW(b,2.5,20)*pass.w*flick
+      const l=Math.min(pass.l+b.g*26+(b.f>0.9?18:0),100)
+      cx.strokeStyle=`hsla(${pass.hue+b.g*10},100%,${l}%,${pass.a*(0.1+0.9*b.f)})`
+      cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()
+    }
+  }
+}
+function contrailRainbow(cx,pts){
+  const t=performance.now()*0.05
+  for(const pass of [{w:2,a:.12},{w:.5,a:.95}]){
+    for(let i=1;i<pts.length;i++){
+      const a=pts[i-1],b=pts[i]
+      const hue=(b.f*300+t+b.rot*120)%360
+      cx.lineWidth=segW(b,3,15)*pass.w
+      cx.strokeStyle=`hsla(${hue},100%,${55+b.g*15}%,${pass.a*(0.15+0.85*b.f)})`
+      cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()
+    }
+  }
+}
+function contrailElectric(cx,pts,hue){
+  for(let i=1;i<pts.length;i++){
+    const a=pts[i-1],b=pts[i]
+    cx.lineWidth=segW(b,3,14)*2
+    cx.strokeStyle=`hsla(${hue},100%,60%,${0.10*(0.2+0.8*b.f)})`
+    cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()
+  }
+  const now=performance.now()*0.02
+  cx.strokeStyle=`hsla(${hue},100%,92%,0.9)`;cx.lineWidth=1.4*DPR
+  cx.beginPath()
+  for(let i=0;i<pts.length;i++){
+    const b=pts[i]
+    const amp=(4+b.rot*44)*DPR*b.f
+    const jx=(Math.sin(i*12.9+now)*0.5+(Math.random()-0.5))*amp
+    const jy=(Math.cos(i*7.3+now)*0.5+(Math.random()-0.5))*amp
+    const x=b.x+jx,y=b.y+jy
+    i===0?cx.moveTo(x,y):cx.lineTo(x,y)
+  }
+  cx.stroke()
+}
+function contrailSparkle(cx,pts,hue){
+  for(let i=1;i<pts.length;i++){
+    const a=pts[i-1],b=pts[i]
+    cx.lineWidth=segW(b,2,10)
+    cx.strokeStyle=`hsla(${hue},90%,60%,${0.06*(0.2+0.8*b.f)})`
+    cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()
+  }
+  const t=performance.now()*0.006
+  for(let i=0;i<pts.length;i++){
+    const b=pts[i]
+    const n=Math.round(1+b.g*5)
+    for(let k=0;k<n;k++){
+      const seed=i*13.7+k*3.1
+      const tw=0.5+0.5*Math.sin(t*3+seed)
+      const rad=(1+b.g*4)*DPR*tw
+      const off=(k-n/2)*4*DPR
+      const x=b.x+Math.cos(seed)*off,y=b.y+Math.sin(seed)*off
+      cx.beginPath();cx.arc(x,y,rad,0,Math.PI*2)
+      cx.fillStyle=`hsla(${hue+b.rot*60},100%,${70+b.g*20}%,${(0.2+0.8*b.f)*tw})`
+      cx.fill()
+    }
+  }
+}
+function contrailPlasma(cx,pts,hue){
+  const ph=(hue+120)%360
+  cx.globalCompositeOperation='lighter'
+  for(let i=0;i<pts.length;i++){
+    const b=pts[i]
+    const r=(6+b.g*30)*DPR
+    const hh=ph-b.rot*80
+    const g=cx.createRadialGradient(b.x,b.y,0,b.x,b.y,r)
+    g.addColorStop(0,`hsla(${hh},100%,70%,${(0.05+0.25*b.g)*(0.2+0.8*b.f)})`)
+    g.addColorStop(1,`hsla(${hh},100%,50%,0)`)
+    cx.fillStyle=g;cx.beginPath();cx.arc(b.x,b.y,r,0,Math.PI*2);cx.fill()
+  }
+  cx.globalCompositeOperation='source-over'
+}
+
+// ── GPS bearing placement (rough — no ARCore, confirmed acceptable) ───────
+const FOV_DEG=65   // typical phone rear-camera horizontal FOV, approximate
+function bearingDist(lat1,lng1,lat2,lng2){
+  const toRad=d=>d*Math.PI/180
+  const dLng=toRad(lng2-lng1)
+  const y=Math.sin(dLng)*Math.cos(toRad(lat2))
+  const x=Math.cos(toRad(lat1))*Math.sin(toRad(lat2))-Math.sin(toRad(lat1))*Math.cos(toRad(lat2))*Math.cos(dLng)
+  const bearing=(Math.atan2(y,x)*180/Math.PI+360)%360
+  const R=6371000,dLat=toRad(lat2-lat1)
+  const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2
+  const dist=2*R*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))
+  return {bearing,dist}
+}
+function computeAnchor(myLat,myLng,myHeading,tLat,tLng,W,H){
+  const {bearing,dist}=bearingDist(myLat,myLng,tLat,tLng)
+  let rel=bearing-myHeading
+  rel=((rel+540)%360)-180
+  if(Math.abs(rel)>FOV_DEG/2)return null   // target behind/outside the frame
+  const x=W/2+(rel/(FOV_DEG/2))*(W/2)
+  const y=H*0.55
+  return {x,y,dist}
+}
+
+// ── State ──────────────────────────────────────────────────────────────
+let myLat=null,myLng=null,myHeading=null
+let targetLat=null,targetLng=null
+let sport='rollerblade'
+let peakAccel=0,peakGyro=0   // live-tracked, since Firebase only has the FINAL score after the session ends
+const trail=[]
+const TRAIL_MS=3000
+
+const GRAV=9.81
+function liveUisScore(){
+  const WA=sport==='boxing'?0.65:0.45, WG=sport==='boxing'?0.35:0.55, MAXV=sport==='boxing'?200:100
+  const raw=WA*peakAccel+WG*peakGyro
+  return Math.max(0,Math.min(1000,Math.round(raw/MAXV*1000)))
+}
+
+navigator.geolocation.watchPosition(p=>{
+  myLat=p.coords.latitude; myLng=p.coords.longitude
+},()=>{stStatus.textContent='location unavailable'},{enableHighAccuracy:true})
+
+function onOrientation(e){
+  const h=(e.absolute||e.webkitCompassHeading!==undefined)?(e.webkitCompassHeading??(360-e.alpha)):e.alpha
+  if(h!=null)myHeading=h
+}
+addEventListener('deviceorientationabsolute',onOrientation)
+addEventListener('deviceorientation',onOrientation)
+
+navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false}).then(stream=>{
+  vid.srcObject=stream; vid.style.display='block'
+}).catch(()=>{stStatus.textContent='camera unavailable'})
+
+// ── Firebase link ──────────────────────────────────────────────────────
+function resolveCode(raw){
+  const app=firebase.apps.find(a=>a.name==='film')||firebase.initializeApp({databaseURL:'https://accelperformaceexponentialapex-default-rtdb.firebaseio.com'},'film')
+  const db=firebase.database(app)
+  if(/^\d+$/.test(raw)){ subscribeTo(db,raw); return }
+  stStatus.textContent='looking up code…'
+  db.ref('codes/'+raw.toUpperCase()).once('value').then(snap=>{
+    const sid=snap.val()
+    if(sid)subscribeTo(db,String(sid))
+    else stStatus.textContent='code not found'
+  }).catch(()=>stStatus.textContent='code not found')
+}
+
+function subscribeTo(db,sid){
+  const ref=db.ref('sessions/'+sid)
+  stStatus.textContent='● linked'
+  ref.child('meta/sport').once('value',s=>{ if(s.val())sport=s.val() })
+  ref.child('meta/contrailStyle').on('value',s=>{
+    const i=CONTRAIL_STYLES.indexOf((s.val()||'').toUpperCase())
+    if(i>=0){contrailStyle=i;stStyle.textContent=CONTRAIL_STYLES[i]}
+  })
+  ref.child('meta/paused').on('value',s=>{
+    stPaused.style.display=s.val()?'inline':'none'
+  })
+  ref.child('gps/latest').on('value',s=>{
+    const v=s.val();if(!v)return
+    targetLat=v.lat; targetLng=v.lng
+  })
+  const onSample=side=>s=>{
+    const v=s.val();if(!v)return
+    const g=+v.accel_mag, r=+v.gyro_mag
+    if(isFinite(g))peakAccel=Math.max(peakAccel,g)
+    if(isFinite(r))peakGyro=Math.max(peakGyro,r)
+    scoreTag.textContent='score '+liveUisScore()
+    if(myLat==null||myLng==null||myHeading==null||targetLat==null)return
+    const anchor=computeAnchor(myLat,myLng,myHeading,targetLat,targetLng,c.width,c.height)
+    if(!anchor)return
+    const gN=Math.min((isFinite(g)?g:0)/GRAV/1.6,1)      // rough normalisation vs typical peak
+    const rotN=Math.min((isFinite(r)?r:0)/8,1)
+    const now=performance.now()
+    trail.push({x:anchor.x,y:anchor.y,g:gN,rot:rotN,t:now})
+    while(trail.length>1&&now-trail[0].t>TRAIL_MS)trail.shift()
+  }
+  ref.child('left/latest').on('value',onSample('left'))
+  ref.child('right/latest').on('value',onSample('right'))
+}
+
+const params=new URLSearchParams(location.search)
+const code=params.get('code')
+if(code)resolveCode(code)
+else stStatus.textContent='no code given'
+
+// ── Render loop: draw camera frame into the canvas, then the contrail on
+// top, so the canvas is one fully composited surface — directly recordable
+function frame(){
+  requestAnimationFrame(frame)
+  const W=c.width,H=c.height
+  cx.clearRect(0,0,W,H)
+  if(vid.readyState>=2){
+    try{cx.drawImage(vid,0,0,W,H)}catch(_){}
+  }
+  for(let i=trail.length-1;i>=0;i--)trail[i].f=trail.length>1?i/(trail.length-1):1
+  drawContrail(cx,trail,180)
+}
+requestAnimationFrame(frame)
+
+// ── Recording: canvas already has camera + contrail composited ──────────
+let recorder=null,chunks=[]
+function toggleRec(){
+  const btn=document.getElementById('btnRec')
+  if(!recorder||recorder.state==='inactive'){
+    chunks=[]
+    const stream=c.captureStream(30)
+    recorder=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp9'})
+    recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)}
+    recorder.onstop=()=>{
+      const blob=new Blob(chunks,{type:'video/webm'})
+      const score=liveUisScore()
+      const a=document.createElement('a')
+      a.href=URL.createObjectURL(blob)
+      a.download='madxs_clip_score'+score+'_'+Date.now()+'.webm'
+      document.body.appendChild(a);a.click();a.remove()
+    }
+    recorder.start()
+    btn.classList.add('rec')
+  }else{
+    recorder.stop()
+    btn.classList.remove('rec')
+  }
+}
+</script>
+</body>
+</html>

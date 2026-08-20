@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1085619306435",
+    "firebase_url": "https://madxtreamsports-default-rtdb.firebaseio.com",
+    "project_id": "madxtreamsports",
+    "storage_bucket": "madxtreamsports.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085619306435:android:a0e4d3909d0d7484cb8776",
+        "android_client_info": {
+          "package_name": "com.nathangamalnasser.natapps.recorder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1085619306435-41tg8epmoqfir3qd19pfp7a9h5rtan3b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nathangamalnasser.natapps.recorder",
+            "certificate_hash": "807222c2021441d44177abff1a177f7e50081a7c"
+          }
+        },
+        {
+          "client_id": "1085619306435-kphuugv6r6crsiulp9npgrs9cbriun77.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEmNhoQ2d4G4YmQ4IWkEMh2w73Q9aUhJA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1085619306435-kphuugv6r6crsiulp9npgrs9cbriun77.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

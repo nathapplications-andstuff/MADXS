@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/accent" android:textSize="28sp"
+            android:fontFamily="sans-serif-condensed" android:letterSpacing="0.12"
+            android:layout_marginBottom="2dp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/app_full_name"
+            android:textColor="@color/muted" android:textSize="11sp"
+            android:layout_marginBottom="20dp" />
+
+        <!-- SPORT MODE -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="SPORT MODE" android:textColor="@color/muted"
+            android:textSize="10sp" android:letterSpacing="0.15" android:layout_marginBottom="8dp" />
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="20dp">
+            <Button android:id="@+id/btnRollerblade"
+                android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                android:text="ROLLERBLADE" android:textSize="14sp" android:letterSpacing="0.06"
+                android:layout_marginEnd="6dp"
+                android:textColor="@color/bg" android:background="@color/accent"
+                app:backgroundTint="@color/accent" />
+            <Button android:id="@+id/btnBoxing"
+                android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                android:text="BOXING" android:textSize="14sp" android:letterSpacing="0.06"
+                android:textColor="@color/accent" android:background="@color/surface"
+                app:backgroundTint="@color/surface" />
+        </LinearLayout>
+
+        <!-- DEVICE SIDE -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="DEVICE SIDE" android:textColor="@color/muted"
+            android:textSize="10sp" android:letterSpacing="0.15" android:layout_marginBottom="8dp" />
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="6dp">
+            <Button android:id="@+id/btnLeft"
+                android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                android:text="LEFT" android:textSize="18sp" android:letterSpacing="0.1"
+                android:layout_marginEnd="6dp"
+                android:textColor="@color/bg" android:background="@color/accent"
+                app:backgroundTint="@color/accent" />
+            <Button android:id="@+id/btnRight"
+                android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                android:text="RIGHT" android:textSize="18sp" android:letterSpacing="0.1"
+                android:textColor="@color/accent" android:background="@color/surface"
+                app:backgroundTint="@color/surface" />
+        </LinearLayout>
+
+        <TextView android:id="@+id/tvModeHint"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Left pocket" android:textColor="@color/muted"
+            android:textSize="11sp" android:layout_marginBottom="20dp" />
+
+        <!-- LIVE VIEW -->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border" android:layout_marginBottom="12dp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="LIVE VIEW" android:textColor="@color/muted"
+            android:textSize="10sp" android:letterSpacing="0.15" android:layout_marginBottom="6dp" />
+        <TextView android:id="@+id/tvLiveUrl"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="starting…"
+            android:textColor="@color/accent2" android:textSize="16sp"
+            android:fontFamily="monospace" android:layout_marginBottom="2dp"
+            android:clickable="true" android:focusable="true" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Tap URL to show QR code for viewer · or scan after starting a session"
+            android:textColor="@color/muted" android:textSize="11sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- RECORDING -->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border" android:layout_marginBottom="12dp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="RECORDING" android:textColor="@color/muted"
+            android:textSize="10sp" android:letterSpacing="0.15" android:layout_marginBottom="8dp" />
+
+        <TextView android:id="@+id/tvTimer"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="00:00" android:textColor="@color/accent2" android:textSize="52sp"
+            android:fontFamily="sans-serif-condensed" android:gravity="center"
+            android:letterSpacing="0.1" android:layout_marginBottom="8dp" />
+
+        <Button android:id="@+id/btnRecord"
+            android:layout_width="match_parent" android:layout_height="64dp"
+            android:text="●  START RECORDING" android:textSize="20sp" android:letterSpacing="0.08"
+            android:textColor="@color/bg" android:background="@color/accent"
+            app:backgroundTint="@color/accent"
+            android:layout_marginBottom="8dp" />
+
+        <Button android:id="@+id/btnWatchLive"
+            android:layout_width="match_parent" android:layout_height="52dp"
+            android:text="▶  WATCH LIVE" android:textSize="15sp" android:letterSpacing="0.08"
+            android:textColor="@color/bg" android:background="@color/accent2"
+            app:backgroundTint="@color/accent2"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
+
+        <Button android:id="@+id/btnContrailStyle"
+            android:layout_width="match_parent" android:layout_height="44dp"
+            android:text="✨  CONTRAIL: NEON" android:textSize="13sp" android:letterSpacing="0.06"
+            android:textColor="@color/accent" android:background="@color/surface"
+            app:backgroundTint="@color/surface"
+            android:visibility="gone"
+            android:layout_marginBottom="20dp" />
+
+        <!-- SENSORS -->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border" android:layout_marginBottom="12dp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="LIVE SENSORS" android:textColor="@color/muted"
+            android:textSize="10sp" android:letterSpacing="0.15" android:layout_marginBottom="8dp" />
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="6dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:background="@color/surface" android:padding="8dp" android:layout_marginEnd="4dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="AX" android:textColor="@color/muted" android:textSize="9sp" />
+                <TextView android:id="@+id/tvAx" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:text="0.00"
+                    android:textColor="@color/accent2" android:textSize="15sp" android:fontFamily="monospace" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:background="@color/surface" android:padding="8dp" android:layout_marginEnd="4dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="AY" android:textColor="@color/muted" android:textSize="9sp" />
+                <TextView android:id="@+id/tvAy" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:text="9.81"
+                    android:textColor="@color/accent2" android:textSize="15sp" android:fontFamily="monospace" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:background="@color/surface" android:padding="8dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="AZ" android:textColor="@color/muted" android:textSize="9sp" />
+                <TextView android:id="@+id/tvAz" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:text="0.00"
+                    android:textColor="@color/accent2" android:textSize="15sp" android:fontFamily="monospace" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="8dp">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:background="@color/surface" android:padding="8dp" android:layout_marginEnd="4dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="GX" android:textColor="@color/muted" android:textSize="9sp" />
+                <TextView android:id="@+id/tvGx" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:text="0.000"
+                    android:textColor="@color/green" android:textSize="15sp" android:fontFamily="monospace" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:background="@color/surface" android:padding="8dp" android:layout_marginEnd="4dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="GY" android:textColor="@color/muted" android:textSize="9sp" />
+                <TextView android:id="@+id/tvGy" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:text="0.000"
+                    android:textColor="@color/green" android:textSize="15sp" android:fontFamily="monospace" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:background="@color/surface" android:padding="8dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="GZ" android:textColor="@color/muted" android:textSize="9sp" />
+                <TextView android:id="@+id/tvGz" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:text="0.000"
+                    android:textColor="@color/green" android:textSize="15sp" android:fontFamily="monospace" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView android:id="@+id/tvGyroStatus"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="GYRO: checking..."
+            android:textColor="@color/muted"
+            android:textSize="11sp" android:fontFamily="monospace"
+            android:layout_marginBottom="4dp" />
+
+        <TextView android:id="@+id/tvGpsStatus"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="GPS: idle"
+            android:textColor="@color/muted"
+            android:textSize="11sp" android:fontFamily="monospace"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="24dp">
+            <TextView android:id="@+id/tvPeakAccel"
+                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:text="Peak: 0.0g" android:textColor="@color/muted"
+                android:textSize="12sp" android:fontFamily="monospace" />
+            <TextView android:id="@+id/tvSampleCount"
+                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:text="Samples: 0" android:textColor="@color/muted"
+                android:textSize="12sp" android:fontFamily="monospace" android:gravity="end" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border" android:layout_marginBottom="12dp" />
+        <Button android:id="@+id/btnSessions"
+            android:layout_width="match_parent" android:layout_height="52dp"
+            android:text="VIEW SESSIONS" android:textSize="14sp" android:letterSpacing="0.08"
+            android:textColor="@color/accent" android:background="@color/surface"
+            app:backgroundTint="@color/surface"
+            android:layout_marginBottom="8dp" />
+        <Button android:id="@+id/btnFilmLive"
+            android:layout_width="match_parent" android:layout_height="52dp"
+            android:text="🎥  FILM SOMEONE LIVE" android:textSize="14sp" android:letterSpacing="0.08"
+            android:textColor="@color/accent" android:background="@color/surface"
+            app:backgroundTint="@color/surface"
+            android:layout_marginBottom="8dp" />
+        <Button android:id="@+id/btnFriends"
+            android:layout_width="match_parent" android:layout_height="52dp"
+            android:text="👥  FRIENDS" android:textSize="14sp" android:letterSpacing="0.08"
+            android:textColor="@color/accent" android:background="@color/surface"
+            app:backgroundTint="@color/surface" />
+    </LinearLayout>
+</ScrollView>

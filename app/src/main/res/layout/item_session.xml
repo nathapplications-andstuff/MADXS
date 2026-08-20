@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/surface"
+    android:padding="14dp"
+    android:layout_marginBottom="6dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text"
+        android:textSize="14sp"
+        android:fontFamily="monospace"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvMeta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/muted"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:layout_marginBottom="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnView"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="QR / VIEW"
+            android:textSize="12sp"
+            android:letterSpacing="0.06"
+            android:textColor="@color/bg"
+            android:background="@color/accent2"
+            app:backgroundTint="@color/accent2"
+            android:layout_marginEnd="6dp" />
+
+        <Button
+            android:id="@+id/btnExport"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="SHARE"
+            android:textSize="12sp"
+            android:letterSpacing="0.06"
+            android:textColor="@color/bg"
+            android:background="@color/accent"
+            app:backgroundTint="@color/accent"
+            android:layout_marginEnd="6dp" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="SAVE"
+            android:textSize="12sp"
+            android:letterSpacing="0.06"
+            android:textColor="@color/bg"
+            android:background="@color/accent2"
+            app:backgroundTint="@color/accent2"
+            android:layout_marginEnd="6dp" />
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="DELETE"
+            android:textSize="12sp"
+            android:letterSpacing="0.06"
+            android:textColor="@color/stop_red"
+            android:background="@color/bg"
+            app:backgroundTint="@color/bg" />
+    </LinearLayout>
+</LinearLayout>

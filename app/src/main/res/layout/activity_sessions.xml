@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="@color/surface"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="← BACK"
+            android:textColor="@color/muted"
+            android:textSize="11sp"
+            android:letterSpacing="0.08"
+            android:background="@null"
+            app:backgroundTint="@color/surface"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SESSIONS"
+            android:textColor="@color/accent"
+            android:textSize="20sp"
+            android:letterSpacing="0.1"
+            android:fontFamily="sans-serif-condensed" />
+
+        <Button
+            android:id="@+id/btnSaveAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SAVE ALL"
+            android:textColor="@color/accent2"
+            android:textSize="11sp"
+            android:letterSpacing="0.08"
+            android:background="@null"
+            app:backgroundTint="@color/surface"
+            android:layout_marginEnd="10dp" />
+
+        <Button
+            android:id="@+id/btnExportAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SHARE ALL"
+            android:textColor="@color/accent"
+            android:textSize="11sp"
+            android:letterSpacing="0.08"
+            android:background="@null"
+            app:backgroundTint="@color/surface" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No sessions recorded yet."
+        android:textColor="@color/muted"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSessions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:padding="8dp" />
+</LinearLayout>

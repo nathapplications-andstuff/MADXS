@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Top-level user doc: email (for friend search) + uisHighScore.
+    // Any signed-in user may read any user's doc — this is what makes the
+    // whereEqualTo("email", ...) lookup in FriendsActivity legal: Firestore
+    // rejects a collection query unless it can prove every possible match is
+    // readable, and a per-owner rule can't prove that for an unfiltered scan.
+    // Only the owner may write their own doc.
+    match /users/{uid} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == uid;
+
+      // A user's own friend list. Either side of a friendship may create the
+      // reciprocal entry — that's the point of linking (QR scan or accepting
+      // a request writes into the OTHER user's friends subcollection) — but
+      // only the entry that names themselves, and only create/delete.
+      match /friends/{friendUid} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow create, delete: if request.auth != null
+          && (request.auth.uid == uid || request.auth.uid == friendUid);
+        allow update: if false;
+      }
+
+      // Incoming friend requests. Only the target user reads their own inbox.
+      // Only the named sender may create (or delete, e.g. cancel) a request
+      // under someone else's inbox; the recipient may delete to accept/decline.
+      match /friendRequests/{fromUid} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow create: if request.auth != null && request.auth.uid == fromUid;
+        allow delete: if request.auth != null
+          && (request.auth.uid == uid || request.auth.uid == fromUid);
+        allow update: if false;
+      }
+    }
+
+    // Session summary, written once by FirebaseHubWriter.endSession(). No
+    // client code reads this collection back (live viewers use RTDB, not
+    // Firestore), so it's write-only from the owning user's perspective.
+    match /sessions/{sessionId} {
+      allow create: if request.auth != null
+        && request.auth.uid == request.resource.data.uid;
+      allow read, update, delete: if false;
+    }
+  }
+}

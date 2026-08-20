@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="LINK A FRIEND" android:textColor="@color/accent" android:textSize="24sp"
+            android:fontFamily="sans-serif-condensed" android:letterSpacing="0.1"
+            android:layout_marginBottom="4dp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Either way links both accounts instantly — no extra step after that."
+            android:textColor="@color/muted" android:textSize="11sp" android:layout_marginBottom="20dp" />
+
+        <!-- QR linking -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="OPTION 1 — QR CODE" android:textColor="@color/muted"
+            android:textSize="10sp" android:letterSpacing="0.15" android:layout_marginBottom="8dp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="20dp">
+            <Button android:id="@+id/btnMyQr"
+                android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                android:text="SHOW MY QR" android:textSize="13sp" android:letterSpacing="0.04"
+                android:layout_marginEnd="6dp"
+                android:textColor="@color/bg" android:background="@color/accent"
+                app:backgroundTint="@color/accent" />
+            <Button android:id="@+id/btnScanQr"
+                android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                android:text="SCAN FRIEND'S QR" android:textSize="13sp" android:letterSpacing="0.04"
+                android:textColor="@color/accent" android:background="@color/surface"
+                app:backgroundTint="@color/surface" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border" android:layout_marginBottom="16dp" />
+
+        <!-- Friend request by email -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="OPTION 2 — BE FRIENDS" android:textColor="@color/muted"
+            android:textSize="10sp" android:letterSpacing="0.15" android:layout_marginBottom="8dp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Send a request by email. They accept it below on their phone."
+            android:textColor="@color/muted" android:textSize="11sp" android:layout_marginBottom="8dp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="20dp">
+            <EditText android:id="@+id/etFriendEmail"
+                android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1"
+                android:hint="friend@email.com" android:inputType="textEmailAddress"
+                android:textColor="@color/text" android:textColorHint="@color/muted"
+                android:background="@color/surface"
+                android:paddingStart="12dp" android:paddingEnd="12dp"
+                android:layout_marginEnd="6dp" />
+            <Button android:id="@+id/btnSendRequest"
+                android:layout_width="wrap_content" android:layout_height="48dp"
+                android:text="SEND" android:textSize="13sp"
+                android:textColor="@color/bg" android:background="@color/accent"
+                app:backgroundTint="@color/accent" />
+        </LinearLayout>
+        <TextView android:id="@+id/tvFriendStatus"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/muted" android:textSize="11sp" android:fontFamily="monospace"
+            android:layout_marginTop="-12dp" android:layout_marginBottom="16dp" />
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border" android:layout_marginBottom="16dp" />
+
+        <!-- Pending requests -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="PENDING REQUESTS" android:textColor="@color/muted"
+            android:textSize="10sp" android:letterSpacing="0.15" android:layout_marginBottom="8dp" />
+        <LinearLayout android:id="@+id/pendingContainer"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginBottom="8dp" />
+        <TextView android:id="@+id/tvNoPending"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="none" android:textColor="@color/muted" android:textSize="11sp"
+            android:layout_marginBottom="20dp" />
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border" android:layout_marginBottom="16dp" />
+
+        <!-- Friends list -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="LINKED FRIENDS" android:textColor="@color/muted"
+            android:textSize="10sp" android:letterSpacing="0.15" android:layout_marginBottom="8dp" />
+        <LinearLayout android:id="@+id/friendsContainer"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginBottom="8dp" />
+        <TextView android:id="@+id/tvNoFriends"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="none yet" android:textColor="@color/muted" android:textSize="11sp" />
+
+    </LinearLayout>
+</ScrollView>
