@@ -4,7 +4,7 @@ Android app for MADXtreamSports. Record skate or boxing on one phone, get a UIS 
 
 Website (watch as guest): https://madxtreamsports.com
 
-Install: on https://madxtreamsports.com click **Download the app**, unzip, open `MADXtreamSports.apk`, allow install from the browser if asked.
+Install: on https://madxtreamsports.com click **Download the app**. That fetches `MADXtreamSports.apk` from GitHub Releases. Allow install from the browser if asked.
 
 ## Run
 
