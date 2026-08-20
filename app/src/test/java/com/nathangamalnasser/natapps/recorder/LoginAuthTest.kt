@@ -81,6 +81,14 @@ class LoginAuthTest {
     }
 
     @Test
+    fun mapAuthError_guestProviderDisabled_mentionsGuest() {
+        assertEquals(
+            "Guest try isn't enabled in Firebase Authentication",
+            LoginAuth.mapAuthError("The given sign-in provider is disabled for this Firebase project.", "Guest")
+        )
+    }
+
+    @Test
     fun mapGoogleApiException_developerError_explainsRebuild() {
         val msg = LoginAuth.mapGoogleApiException(10)
         assertTrue(msg.contains("SHA-1"))

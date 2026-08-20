@@ -41,7 +41,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sign in to record and share sessions"
+            android:text="sign in to record, or try as guest"
             android:textColor="@color/muted"
             android:textSize="11sp"
             android:layout_marginBottom="32dp" />
@@ -98,6 +98,16 @@
             android:layout_width="260dp"
             android:layout_height="48dp"
             android:text="Continue with Google"
+            android:textColor="@color/accent"
+            android:background="@color/surface"
+            app:backgroundTint="@color/surface"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnGuest"
+            android:layout_width="260dp"
+            android:layout_height="48dp"
+            android:text="Try as guest"
             android:textColor="@color/accent"
             android:background="@color/surface"
             app:backgroundTint="@color/surface" />

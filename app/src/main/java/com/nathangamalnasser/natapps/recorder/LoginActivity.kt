@@ -65,6 +65,12 @@ class LoginActivity : AppCompatActivity() {
             }
             googleLauncher.launch(client.signInIntent)
         }
+
+        binding.btnGuest.setOnClickListener {
+            auth.signInAnonymously()
+                .addOnSuccessListener { goToMain() }
+                .addOnFailureListener { setStatus(LoginAuth.mapAuthError(it.message, "Guest")) }
+        }
     }
 
     // Google Sign-In needs a Web OAuth client ID that the google-services plugin only

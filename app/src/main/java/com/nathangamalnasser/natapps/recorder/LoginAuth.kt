@@ -27,7 +27,11 @@ object LoginAuth {
         return when {
             lower.contains("operation_not_allowed") ||
                 lower.contains("sign-in provider is disabled") ->
-                "Email/password is not enabled in Firebase Authentication"
+                if (operation.contains("Guest", ignoreCase = true)) {
+                    "Guest try isn't enabled in Firebase Authentication"
+                } else {
+                    "Email/password is not enabled in Firebase Authentication"
+                }
             lower.contains("configuration_not_found") ||
                 lower.contains("admin-restricted-operation") ||
                 lower.contains("identity toolkit") ->
