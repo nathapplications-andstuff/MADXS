@@ -104,7 +104,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun wireCallbacks() {
         val svc = service ?: return
-        svc.onStateChanged = { runOnUiThread { refreshUi() } }
+        svc.onStateChanged = {
+            runOnUiThread {
+                refreshUi()
+                if (it == RecordingService.RecState.RECORDING) showLiveQr()
+            }
+        }
         svc.onTimerTick    = { elapsed, count, peak ->
             runOnUiThread {
                 val min = elapsed / 60000; val sec = (elapsed / 1000) % 60
@@ -164,20 +169,7 @@ class MainActivity : AppCompatActivity() {
             if (svc.recState == RecordingService.RecState.RECORDING) {
                 svc.stopRecording()
             } else {
-                val input = EditText(this).apply {
-                    hint = "Session name (optional)"
-                    setSingleLine(true)
-                    setPadding(48, 32, 48, 16)
-                }
-                AlertDialog.Builder(this)
-                    .setTitle("New Session")
-                    .setView(input)
-                    .setPositiveButton("START") { _, _ ->
-                        svc.startRecording(input.text.toString().trim())
-                        showLiveQr()
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
+                promptStartOrJoin()
             }
         }
 
@@ -197,6 +189,69 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, FriendsActivity::class.java))
         }
         binding.btnSiteQr.setOnClickListener { showWebsiteQr() }
+        binding.btnSignIn.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java).putExtra(LoginActivity.EXTRA_FROM_APP, true))
+            finish()
+        }
+    }
+
+    private fun promptStartOrJoin() {
+        AlertDialog.Builder(this)
+            .setTitle("Session")
+            .setItems(arrayOf(Branding.START_NEW_OPTION, Branding.JOIN_SESSION_LABEL)) { _, which ->
+                if (which == 0) promptNewSession() else tryJoin()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun tryJoin() {
+        val anonymous = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.isAnonymous == true
+        SessionMembership.canJoin(anonymous, 0)?.let { msg ->
+            android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_LONG).show()
+            return
+        }
+        promptJoinCode()
+    }
+
+    private fun promptNewSession() {
+        val svc = service ?: return
+        val input = EditText(this).apply {
+            hint = "Session name (optional)"
+            setSingleLine(true)
+            setPadding(48, 32, 48, 16)
+        }
+        AlertDialog.Builder(this)
+            .setTitle("New Session")
+            .setView(input)
+            .setPositiveButton("START") { _, _ ->
+                svc.startRecording(input.text.toString().trim())
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun promptJoinCode() {
+        val svc = service ?: return
+        val input = EditText(this).apply {
+            hint = "Code from the host"
+            setSingleLine(true)
+            setPadding(48, 32, 48, 16)
+            inputType = android.text.InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Join session")
+            .setView(input)
+            .setPositiveButton("JOIN") { _, _ ->
+                val code = input.text.toString().trim()
+                if (code.isEmpty()) {
+                    android.widget.Toast.makeText(this, "Enter a code", android.widget.Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                svc.startRecording(joinCode = code)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     // Lets FriendsActivity's "add by email" search find this account —
@@ -341,6 +396,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnRecord.backgroundTintList = android.content.res.ColorStateList.valueOf(
             getColor(if (recording) R.color.stop_red else R.color.accent)
         )
+        binding.btnWatchLive.visibility = if (recording) android.view.View.VISIBLE else android.view.View.GONE
         binding.btnWatchLive.visibility = if (recording) android.view.View.VISIBLE else android.view.View.GONE
         binding.btnContrailStyle.visibility = if (recording) android.view.View.VISIBLE else android.view.View.GONE
         if (!recording) {

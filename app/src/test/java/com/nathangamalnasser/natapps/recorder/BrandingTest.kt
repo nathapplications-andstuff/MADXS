@@ -17,6 +17,9 @@ class BrandingTest {
     @Test
     fun startButton_saysStartSession() {
         assertEquals("●  START SESSION", Branding.START_SESSION_LABEL)
+        assertEquals("Start new session", Branding.START_NEW_OPTION)
+        assertEquals("JOIN SESSION", Branding.JOIN_SESSION_LABEL)
+        assertEquals("SIGN IN", Branding.SIGN_IN_LABEL)
         assertEquals("■  STOP", Branding.STOP_SESSION_LABEL)
     }
 }

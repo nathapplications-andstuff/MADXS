@@ -5,5 +5,8 @@ object Branding {
     const val MAD_MEANS = "Motion Active Data"
     const val SITE_URL = "https://madxtreamsports.com"
     const val START_SESSION_LABEL = "●  START SESSION"
+    const val START_NEW_OPTION = "Start new session"
+    const val JOIN_SESSION_LABEL = "JOIN SESSION"
+    const val SIGN_IN_LABEL = "SIGN IN"
     const val STOP_SESSION_LABEL = "■  STOP"
 }

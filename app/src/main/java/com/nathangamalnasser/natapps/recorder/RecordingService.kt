@@ -200,13 +200,29 @@ class RecordingService : Service(), SensorEventListener {
                 ?.hostAddress
         }.getOrNull() ?: "?"
 
-    fun startRecording(name: String = "") {
+    fun startRecording(name: String = "", joinCode: String? = null) {
+        if (recState == RecState.RECORDING) return
+        if (!joinCode.isNullOrBlank()) {
+            firebaseHub.joinSession(joinCode, sport, deviceSide,
+                onOk = { sid -> scope.launch(Dispatchers.Main) { beginCapture(name, sid) } },
+                onErr = { msg -> scope.launch(Dispatchers.Main) { onHubError?.invoke(msg) } }
+            )
+            return
+        }
+        val sid = System.currentTimeMillis()
+        firebaseHub.startSession(
+            sid, sport, contrailStyle, deviceSide,
+            onReady = { scope.launch(Dispatchers.Main) { beginCapture(name, sid) } },
+            onErr = { msg -> scope.launch(Dispatchers.Main) { onHubError?.invoke(msg) } }
+        )
+    }
+
+    private fun beginCapture(name: String, sid: Long) {
         if (recState == RecState.RECORDING) return
         sessionName = name
         if (!peerClient.isConnected()) peerClient.connect("localhost", deviceSide)
         recState         = RecState.RECORDING
-        startTime        = System.currentTimeMillis()
-        firebaseHub.startSession(startTime, sport, contrailStyle)
+        startTime        = sid
         lastSampleMs     = 0L
         peakAccel        = 0.0
         peakGyro         = 0.0

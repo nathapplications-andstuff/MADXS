@@ -20,6 +20,9 @@ object LoginAuth {
 
     fun googleReady(webClientId: String?): Boolean = !webClientId.isNullOrBlank()
 
+    /** Home-screen Sign In: guests have no other way back to the login screen. */
+    fun showHomeSignInButton(isAnonymous: Boolean) = isAnonymous
+
     fun mapAuthError(message: String?, operation: String): String {
         val raw = message?.trim().orEmpty()
         if (raw.isEmpty()) return "$operation failed"

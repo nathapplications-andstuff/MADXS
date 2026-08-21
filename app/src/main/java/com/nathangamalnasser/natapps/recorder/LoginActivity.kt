@@ -43,6 +43,10 @@ class LoginActivity : AppCompatActivity() {
 
         setupGoogleSignIn()
 
+        if (intent.getBooleanExtra(EXTRA_FROM_APP, false) || auth.currentUser?.isAnonymous == true) {
+            binding.btnGuest.visibility = android.view.View.GONE
+        }
+
         binding.btnSignIn.setOnClickListener {
             val (email, pass) = emailPass() ?: return@setOnClickListener
             auth.signInWithEmailAndPassword(email, pass)
@@ -111,5 +115,9 @@ class LoginActivity : AppCompatActivity() {
     private fun goToMain() {
         startActivity(Intent(this, MainActivity::class.java))
         finish()
+    }
+
+    companion object {
+        const val EXTRA_FROM_APP = "from_app"
     }
 }

@@ -49,6 +49,12 @@ class LoginAuthTest {
     }
 
     @Test
+    fun showHomeSignInButton_guestOnly() {
+        assertTrue(LoginAuth.showHomeSignInButton(true))
+        assertFalse(LoginAuth.showHomeSignInButton(false))
+    }
+
+    @Test
     fun mapAuthError_providerDisabled_pointsAtConsole() {
         assertEquals(
             "Email/password is not enabled in Firebase Authentication",
