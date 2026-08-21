@@ -5,17 +5,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import org.json.JSONObject
-import java.util.UUID
 
 /**
  * Writes live sensor data to Firebase RTDB (sessions/{id}/...) at 10Hz and
- * a session summary to Firestore on stop, per the schema in CLAUDE.md.
- * uid is the real signed-in Firebase Auth uid (MainActivity gates recording
- * behind sign-in, so currentUser should never be null in practice here —
- * the SharedPreferences UUID is kept only as a last-resort fallback so a
- * stray call never crashes instead of just mis-attributing one session).
+ * a session summary to Firestore on stop.
+ * uid is always the current Firebase Auth uid. A device UUID must never be
+ * written — RTDB rules require meta.uid === auth.uid.
  */
-class FirebaseHubWriter(context: Context) {
+class FirebaseHubWriter(@Suppress("UNUSED_PARAMETER") context: Context) {
 
     companion object {
         private const val RTDB_HZ_MS = 100L   // 10 Hz
@@ -24,26 +21,24 @@ class FirebaseHubWriter(context: Context) {
         private const val CODE_LEN = 5
     }
 
-    // Short alias for sessionId so people can type/say something shorter than a 13-digit
-    // timestamp. DEBT: no collision check on write — at ~33^5 combinations and low session
-    // volume the odds are negligible, but a colliding code would silently point at the wrong
-    // session. Add a read-before-write retry if this ever needs to be bulletproof.
     var lastShortCode: String = ""; private set
+    var lastWriteError: String? = null; private set
+    var onWriteResult: ((ok: Boolean, message: String) -> Unit)? = null
 
-    private val db = FirebaseDatabase.getInstance()
+    private val db = FirebaseDatabase.getInstance(HubAuth.DATABASE_URL)
     private val firestore = FirebaseFirestore.getInstance()
-
-    private val uid: String = FirebaseAuth.getInstance().currentUser?.uid ?: context
-        .getSharedPreferences("madxs_prefs", Context.MODE_PRIVATE)
-        .let { prefs ->
-            prefs.getString("device_uid", null) ?: UUID.randomUUID().toString()
-                .also { prefs.edit().putString("device_uid", it).apply() }
-        }
 
     private var sessionId: Long = 0L
     private var lastImuWriteMs = mutableMapOf<String, Long>()
 
+    private fun uid(): String? = HubAuth.uidForWrite(FirebaseAuth.getInstance().currentUser?.uid)
+
     fun startSession(sessionId: Long, sport: String, contrailStyle: String) {
+        val uid = uid()
+        if (uid == null) {
+            reportWrite(false, "not signed in")
+            return
+        }
         this.sessionId = sessionId
         lastImuWriteMs.clear()
         lastShortCode = (1..CODE_LEN).map { CODE_CHARS.random() }.joinToString("")
@@ -55,25 +50,23 @@ class FirebaseHubWriter(context: Context) {
                 "status" to "recording",
                 "contrailStyle" to contrailStyle
             )
-        )
+        ).addOnSuccessListener {
+            reportWrite(true, "meta ok")
+        }.addOnFailureListener { e ->
+            reportWrite(false, e.message ?: "meta write failed")
+        }
         db.getReference("codes").child(lastShortCode).setValue(sessionId)
-        // Lets a linked friend's FilmActivity find "is this person live right now" without
-        // needing a code — keyed by uid so it survives across sessions, cleared on endSession.
+            .addOnFailureListener { e -> reportWrite(false, e.message ?: "code write failed") }
         val liveRef = db.getReference("liveByUser").child(uid)
         liveRef.setValue(mapOf("sessionId" to sessionId, "shortCode" to lastShortCode, "sport" to sport))
-        // Safety net: if the app dies without calling endSession (crash, killed process),
-        // don't leave a friend's quick-join pointing at a dead session forever.
         liveRef.onDisconnect().removeValue()
     }
 
-    // Lets a friend filming this session (ar-film.html) render the same contrail style live
     fun setContrailStyle(style: String) {
         if (sessionId == 0L) return
         sessionRef().child("meta").child("contrailStyle").setValue(style)
     }
 
-    // Lets any live viewer (tracer-real.html, boxing-realtime-viewer.html, ar-film.html)
-    // show an "on break" indicator while the double-tap pause is active.
     fun setPaused(paused: Boolean) {
         if (sessionId == 0L) return
         sessionRef().child("meta").child("paused").setValue(paused)
@@ -102,30 +95,38 @@ class FirebaseHubWriter(context: Context) {
 
     fun endSession(sport: String, durationMs: Long, uisRaw: Double, uisScore: Int, localCount: Int) {
         if (sessionId == 0L) return
+        val uid = uid()
         sessionRef().child("meta").child("status").setValue("ended")
-        db.getReference("liveByUser").child(uid).removeValue()
+        if (uid != null) db.getReference("liveByUser").child(uid).removeValue()
 
-        val doc = mapOf(
-            "uid" to uid,
-            "sport" to sport,
-            "startTime" to sessionId,
-            "durationMs" to durationMs,
-            "uisRaw" to uisRaw,
-            "uisScore" to uisScore,
-            "localCount" to localCount,
-            "remoteCount" to 0,
-            "createdAt" to com.google.firebase.firestore.FieldValue.serverTimestamp()
-        )
-        firestore.collection("sessions").document(sessionId.toString()).set(doc)
+        if (uid != null) {
+            val doc = mapOf(
+                "uid" to uid,
+                "sport" to sport,
+                "startTime" to sessionId,
+                "durationMs" to durationMs,
+                "uisRaw" to uisRaw,
+                "uisScore" to uisScore,
+                "localCount" to localCount,
+                "remoteCount" to 0,
+                "createdAt" to com.google.firebase.firestore.FieldValue.serverTimestamp()
+            )
+            firestore.collection("sessions").document(sessionId.toString()).set(doc)
 
-        val userRef = firestore.collection("users").document(uid)
-        firestore.runTransaction { txn ->
-            val snap = txn.get(userRef)
-            val current = snap.getLong("uisHighScore") ?: 0L
-            if (uisScore > current) txn.set(userRef, mapOf("uisHighScore" to uisScore), com.google.firebase.firestore.SetOptions.merge())
+            val userRef = firestore.collection("users").document(uid)
+            firestore.runTransaction { txn ->
+                val snap = txn.get(userRef)
+                val current = snap.getLong("uisHighScore") ?: 0L
+                if (uisScore > current) txn.set(userRef, mapOf("uisHighScore" to uisScore), com.google.firebase.firestore.SetOptions.merge())
+            }
         }
 
         sessionId = 0L
+    }
+
+    private fun reportWrite(ok: Boolean, message: String) {
+        lastWriteError = if (ok) null else message
+        onWriteResult?.invoke(ok, message)
     }
 
     private fun sessionRef() = db.getReference("sessions").child(sessionId.toString())

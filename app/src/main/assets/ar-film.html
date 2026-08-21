@@ -207,7 +207,7 @@ navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:fals
 
 // ── Firebase link ──────────────────────────────────────────────────────
 function resolveCode(raw){
-  const app=firebase.apps.find(a=>a.name==='film')||firebase.initializeApp({databaseURL:'https://accelperformaceexponentialapex-default-rtdb.firebaseio.com'},'film')
+  const app=firebase.apps.find(a=>a.name==='film')||firebase.initializeApp({databaseURL:'https://madxtreamsports-default-rtdb.firebaseio.com'},'film')
   const db=firebase.database(app)
   if(/^\d+$/.test(raw)){ subscribeTo(db,raw); return }
   stStatus.textContent='looking up code…'

@@ -77,6 +77,7 @@ class RecordingService : Service(), SensorEventListener {
     var onSensorUpdate: ((Float, Float, Float, Float, Float, Float) -> Unit)? = null
     var onGyroStatus:   ((Boolean) -> Unit)?                            = null
     var onGpsStatus:    ((Boolean, Int) -> Unit)?                       = null
+    var onHubError:     ((String) -> Unit)?                             = null
 
     var sessionName = ""
 
@@ -172,6 +173,9 @@ class RecordingService : Service(), SensorEventListener {
         relayServer.start()
 
         firebaseHub = FirebaseHubWriter(this)
+        firebaseHub.onWriteResult = { ok, message ->
+            if (!ok) onHubError?.invoke(message)
+        }
 
         createNotificationChannel()
     }

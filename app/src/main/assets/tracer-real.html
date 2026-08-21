@@ -1703,7 +1703,7 @@ function handleLiveMsg(msg){
 
 function resolveShortCode(code,appName,onResolved){
   setLiveStatus('Looking up code…')
-  const app=firebase.apps.find(a=>a.name===appName)||firebase.initializeApp({databaseURL:'https://accelperformaceexponentialapex-default-rtdb.firebaseio.com'},appName)
+  const app=firebase.apps.find(a=>a.name===appName)||firebase.initializeApp({databaseURL:'https://madxtreamsports-default-rtdb.firebaseio.com'},appName)
   firebase.database(app).ref('codes/'+code.toUpperCase()).once('value').then(snap=>{
     const sid=snap.val()
     if(sid)onResolved(String(sid))
@@ -1715,7 +1715,7 @@ function connectFirebaseLive(sid){
   if(!/^\d+$/.test(sid)){setLiveStatus('Invalid session ID');return}
   if(liveWs){try{liveWs.close()}catch(_){};liveWs=null}
   if(liveFirebaseRef){try{liveFirebaseRef.off()}catch(_){}}
-  const app=firebase.apps.find(a=>a.name==='tracer')||firebase.initializeApp({databaseURL:'https://accelperformaceexponentialapex-default-rtdb.firebaseio.com'},'tracer')
+  const app=firebase.apps.find(a=>a.name==='tracer')||firebase.initializeApp({databaseURL:'https://madxtreamsports-default-rtdb.firebaseio.com'},'tracer')
   const db=firebase.database(app)
   const ref=db.ref('sessions/'+sid)
   liveFirebaseRef=ref

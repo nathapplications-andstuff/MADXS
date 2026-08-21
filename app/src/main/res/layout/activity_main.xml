@@ -104,7 +104,7 @@
 
         <Button android:id="@+id/btnRecord"
             android:layout_width="match_parent" android:layout_height="64dp"
-            android:text="●  START RECORDING" android:textSize="20sp" android:letterSpacing="0.08"
+            android:text="●  START SESSION" android:textSize="20sp" android:letterSpacing="0.08"
             android:textColor="@color/bg" android:background="@color/accent"
             app:backgroundTint="@color/accent"
             android:layout_marginBottom="8dp" />
@@ -237,6 +237,12 @@
         <Button android:id="@+id/btnFriends"
             android:layout_width="match_parent" android:layout_height="52dp"
             android:text="👥  FRIENDS" android:textSize="14sp" android:letterSpacing="0.08"
+            android:textColor="@color/accent" android:background="@color/surface"
+            app:backgroundTint="@color/surface"
+            android:layout_marginBottom="8dp" />
+        <Button android:id="@+id/btnSiteQr"
+            android:layout_width="match_parent" android:layout_height="52dp"
+            android:text="▦  WEBSITE QR" android:textSize="14sp" android:letterSpacing="0.08"
             android:textColor="@color/accent" android:background="@color/surface"
             app:backgroundTint="@color/surface" />
     </LinearLayout>

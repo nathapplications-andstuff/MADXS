@@ -72,7 +72,7 @@ class FilmActivity : AppCompatActivity() {
                 for (doc in friends) {
                     val friendUid = doc.id
                     val friendEmail = doc.getString("friendEmail") ?: friendUid
-                    FirebaseDatabase.getInstance().getReference("liveByUser").child(friendUid)
+                    FirebaseDatabase.getInstance(HubAuth.DATABASE_URL).getReference("liveByUser").child(friendUid)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(data: DataSnapshot) {
                                 val shortCode = data.child("shortCode").getValue(String::class.java)

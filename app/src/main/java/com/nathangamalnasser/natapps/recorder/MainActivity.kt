@@ -142,6 +142,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        svc.onHubError = { msg ->
+            runOnUiThread {
+                android.widget.Toast.makeText(this, "Live upload failed: $msg", android.widget.Toast.LENGTH_LONG).show()
+            }
+        }
         updateLiveUrl()
     }
 
@@ -191,6 +196,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnFriends.setOnClickListener {
             startActivity(Intent(this, FriendsActivity::class.java))
         }
+        binding.btnSiteQr.setOnClickListener { showWebsiteQr() }
     }
 
     // Lets FriendsActivity's "add by email" search find this account —
@@ -227,6 +233,20 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             android.widget.Toast.makeText(this, "No browser found", android.widget.Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun showWebsiteQr() {
+        val url = Branding.SITE_URL
+        val qr = ImageView(this).apply {
+            setImageBitmap(generateQr(url, 512))
+            setPadding(48, 32, 48, 8)
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Website")
+            .setMessage(url)
+            .setView(qr)
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     private fun showLiveQr() {
@@ -317,7 +337,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshUi() {
         val recording = service?.recState == RecordingService.RecState.RECORDING
-        binding.btnRecord.text = if (recording) "■  STOP" else "●  START RECORDING"
+        binding.btnRecord.text = if (recording) Branding.STOP_SESSION_LABEL else Branding.START_SESSION_LABEL
         binding.btnRecord.backgroundTintList = android.content.res.ColorStateList.valueOf(
             getColor(if (recording) R.color.stop_red else R.color.accent)
         )
