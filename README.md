@@ -22,4 +22,4 @@ APK: `app/build/outputs/apk/debug/MADXtreamSports.apk`
 gradlew.bat testDebugUnitTest
 ```
 
-Package `com.nathangamalnasser.natapps.recorder` must stay in sync with Firebase `google-services.json`.
+Package `com.nathangamalnasser.whatupapps.madxs` must stay in sync with Firebase `google-services.json`.

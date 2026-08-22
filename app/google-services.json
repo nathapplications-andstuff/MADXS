@@ -38,6 +38,57 @@
             {
               "client_id": "1085619306435-kphuugv6r6crsiulp9npgrs9cbriun77.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1085619306435-3pdteb36srg9e53j5dt2t6q81s8ok3sv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nathangamalnasser.natapps.recorder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085619306435:android:d0b45fb1cefba860cb8776",
+        "android_client_info": {
+          "package_name": "com.nathangamalnasser.whatupapps.madxs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1085619306435-qj2kjbrqdrc9jblsgumaqvao8of8i2qa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nathangamalnasser.whatupapps.madxs",
+            "certificate_hash": "807222c2021441d44177abff1a177f7e50081a7c"
+          }
+        },
+        {
+          "client_id": "1085619306435-kphuugv6r6crsiulp9npgrs9cbriun77.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEmNhoQ2d4G4YmQ4IWkEMh2w73Q9aUhJA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1085619306435-kphuugv6r6crsiulp9npgrs9cbriun77.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1085619306435-3pdteb36srg9e53j5dt2t6q81s8ok3sv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nathangamalnasser.natapps.recorder"
+              }
             }
           ]
         }
